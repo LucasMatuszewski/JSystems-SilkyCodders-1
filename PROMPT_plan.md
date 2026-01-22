@@ -4,7 +4,7 @@
 
 1. Study @IMPLEMENTATION_PLAN.md (if present; it may be incorrect) and compare it against the specs and existing source code.
 2. Analyze findings, prioritize tasks, and create/update @IMPLEMENTATION_PLAN.md as a bullet point list sorted in priority of items yet to be implemented. 
-3. Ultrathink. Consider searching for TODOs, minimal implementations, placeholders, skipped/flaky tests, and inconsistent patterns.
+3. Ultrathink (Deep Reasoning). Consider searching for TODOs, minimal implementations, placeholders, skipped/flaky tests, and inconsistent patterns. Use available tools (glob, search_file_content) extensively to map the codebase.
 4. Keep @IMPLEMENTATION_PLAN.md up to date with items considered complete/incomplete.
 
 IMPORTANT: Plan only. Do NOT implement anything. Do NOT assume functionality is missing; confirm with code search first. 
