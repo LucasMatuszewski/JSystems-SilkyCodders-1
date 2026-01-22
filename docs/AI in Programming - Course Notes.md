@@ -14,7 +14,8 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 
 - Knowledge base on latest trends: [NotebookLM](https://notebooklm.google.com/notebook/5a69e473-2453-4ee7-bcb6-866af29ba553)
 - **Vibe Codding vs Vibe Engineering**
-	- Linus Torvalds, DHH, 
+	- Linus Torvalds, DHH, and Node.js creator use automated code generation, e.g.:
+		- "[the era of humans writing code is over.](https://x.com/kimmonismus/status/2013524952553492933)" (Node.js creator on AI generating code)
 	- Microsoft named their new Power Apps platform Vibe - we prompt to build apps: [Vibe - Power Apps](https://vibe.powerapps.com/) (only in US right now) | Docs: [Omówienie nowego środowiska usługi Power Apps - Power Apps | Microsoft Learn](https://learn.microsoft.com/pl-pl/power-apps/vibe/overview)
 	- Vibe Coding definition: [X.com](https://x.com/karpathy/status/1886192184808149383?lang=en)
 - **Context rot & Context engineering**
@@ -117,6 +118,8 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 - AIME (High School Math Exam): [AIME 2025 Benchmark Leaderboard | Artificial Analysis](https://artificialanalysis.ai/evaluations/aime-2025)
 - Market Share - Open Router: [LLM Rankings | OpenRouter](https://openrouter.ai/rankings)
 
+---
+
 ### Best AI Codding Tools
 - Gartner: [Best AI Code Assistants Reviews 2026 | Gartner Peer Insights](https://www.gartner.com/reviews/market/ai-code-assistants)
 - YT comparison: [Best AI Coding Tools for Developers in 2026 - YouTube](https://www.youtube.com/watch?v=pvMGRSZJ4Jw&t=330s)
@@ -146,6 +149,16 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 	- Droid by Factory: [Factory | Agent-Native Software Development](https://factory.ai/)
 	- Letta Code (MemGPT): [Quickstart | Letta Docs](https://docs.letta.com/letta-code/quickstart) (Open Source)
 	- ... many more....
+
+#### Codex - official plugin from OpenAI for VSCode "family":
+- [https://developers.openai.com/codex/ide/](https://developers.openai.com/codex/ide/)
+- VSCode / Cursor / Antigravity / Windsurf: [https://open-vsx.org/extension/openai/chatgpt#review-details](https://open-vsx.org/extension/openai/chatgpt#review-details)
+
+#### Claude Code extension for VSCode "family":
+[https://open-vsx.org/extension/Anthropic/claude-code#review-details](https://open-vsx.org/extension/Anthropic/claude-code#review-details)
+
+
+---
 
 ## Pricing - rate limits
 
@@ -199,6 +212,8 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 ## AI Agents Tool-belt:
 
 - **Rules** - custom prompts per project / folder / type of file
+	- Cursor, GitHub Copilot & Claude Code has path based targeting e.g. `"src/api/**/*.ts"`
+	- in Cluade Code: [Path Specific Rules](https://code.claude.com/docs/en/memory#path-specific-rules)
 	- in Cursor: [Rules | Cursor Docs](https://cursor.com/docs/context/rules)
 	- in OpenCode: [Rules | OpenCode](https://opencode.ai/docs/rules/)
 	- in Codex CLI: [Rules](https://developers.openai.com/codex/rules)
@@ -208,12 +223,16 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 	- Growing standard: [AGENTS.md](https://agents.md/)
 	- CLAUDE.md [CLAUDE.MD files: Customizing Claude Code for your codebase | Claude](https://claude.com/blog/using-claude-md-files)
 	- GEMINI.md [Provide context with GEMINI.md files | Gemini CLI](https://geminicli.com/docs/cli/gemini-md/)
+	- Discussions / Sources:
+		- X.com thread: [Matt Pocock](https://x.com/mattpocockuk/status/2012906065856270504)
+		- Article & Prompt to fix AGENTS.md: [A Complete Guide To AGENTS.md](https://www.aihero.dev/a-complete-guide-to-agents-md)
 	- Examples:
 		- [mcp-for-beginners/AGENTS.md at main · microsoft/mcp-for-beginners · GitHub](https://github.com/microsoft/mcp-for-beginners/blob/main/AGENTS.md) (includes Java Spring Boot)
 		- [payload/templates/website/AGENTS.md at main · payloadcms/payload · GitHub](https://github.com/payloadcms/payload/blob/main/templates/website/AGENTS.md)
 - **SKILLS.md**
 	- [GitHub - agentskills/agentskills: Specification and documentation for Agent Skills](https://github.com/agentskills/agentskills)
 	- [Overview - Agent Skills](https://agentskills.io/home)
+		- Library of Skills from Vercel: [The Agent Skills Directory](https://skills.sh/)
 	- in Copilot: [About Agent Skills - GitHub Docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
 	- in Claude Code: [Agent Skills - Claude Code Docs](https://code.claude.com/docs/en/skills)
 	- in Cursor: [Agent Skills | Cursor Docs](https://cursor.com/docs/context/skills)
@@ -222,10 +241,10 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 - **Tools** - built-in Agent tools (provided by IDE / CLI you use):
 	- Terminal
 	- Browse / Search
-	- Docs (RAG)
+	- Docs (RAG) lub Contex7 MCP jeśli nie ma docs wbudowanych
 	- GIT
 	- TODO list
-	- Browser integration (e.g. in Cursor)
+	- Browser integration (e.g. in Cursor) / Chrome-devtools-mcp
 	- + Custom Tools
 - **LSP** (Language Server Protocol)
 	- allows agent to use diagnostic tools and understand syntax, linting errors
@@ -364,14 +383,14 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
  - **Qodana** Static Analysis & CI/CD:
 	 - [Qodana: Static Code Analysis Tool by JetBrains](https://www.jetbrains.com/qodana/)
 
- ### SDK for AI Apps in Spring / Java:
- - Spring AI:
+### SDK for AI Apps in Spring / Java:
+- Spring AI:
 	- [Introduction :: Spring AI Reference](https://docs.spring.io/spring-ai/reference/index.html)
 	- [OpenAI Chat :: Spring AI Reference](https://docs.spring.io/spring-ai/reference/api/chat/openai-chat.html)
 	- [OpenAI SDK Chat (Official) :: Spring AI Reference](https://docs.spring.io/spring-ai/reference/api/chat/openai-sdk-chat.html)
- - Official Open AI SDK:
+- Official Open AI SDK:
 	- [GitHub - openai/openai-java: The official Java library for the OpenAI API](https://github.com/openai/openai-java)
 	- [Libraries | OpenAI API](https://platform.openai.com/docs/libraries?language=java&desktop-os=windows)
- - UI Libraries:
+- UI Libraries:
 	- Vercel AI SDK UI [AI SDK UI: Overview](https://ai-sdk.dev/docs/ai-sdk-ui/overview)
 	- assistant-ui [GitHub - assistant-ui/assistant-ui: Typescript/React Library for AI Chat💬🚀](https://github.com/assistant-ui/assistant-ui)
