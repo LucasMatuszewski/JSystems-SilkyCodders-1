@@ -306,5 +306,59 @@ class ChatControllerTests {
                     .expectNext("0:\"I'm doing great!\"\n")
                     .verifyComplete();
         }
+
+        @Test
+        @DisplayName("Should handle null role by defaulting to user")
+        void shouldHandleNullRole() {
+            // Given
+            ChatRequest request = ChatRequest.builder()
+                    .messages(List.of(
+                            ChatMessage.builder()
+                                    .role(null)  // null role
+                                    .content("Test message")
+                                    .build()
+                    ))
+                    .build();
+
+            when(chatClient.prompt()).thenReturn(requestSpec);
+            when(requestSpec.messages(anyList())).thenReturn(requestSpec);
+            when(requestSpec.stream()).thenReturn(streamResponseSpec);
+            when(streamResponseSpec.content()).thenReturn(Flux.just("OK"));
+
+            // When
+            Flux<String> result = controller.chat(request);
+
+            // Then
+            StepVerifier.create(result)
+                    .expectNext("0:\"OK\"\n")
+                    .verifyComplete();
+        }
+
+        @Test
+        @DisplayName("Should handle null content by using empty string")
+        void shouldHandleNullContent() {
+            // Given
+            ChatRequest request = ChatRequest.builder()
+                    .messages(List.of(
+                            ChatMessage.builder()
+                                    .role("user")
+                                    .content(null)  // null content
+                                    .build()
+                    ))
+                    .build();
+
+            when(chatClient.prompt()).thenReturn(requestSpec);
+            when(requestSpec.messages(anyList())).thenReturn(requestSpec);
+            when(requestSpec.stream()).thenReturn(streamResponseSpec);
+            when(streamResponseSpec.content()).thenReturn(Flux.just("Response"));
+
+            // When
+            Flux<String> result = controller.chat(request);
+
+            // Then
+            StepVerifier.create(result)
+                    .expectNext("0:\"Response\"\n")
+                    .verifyComplete();
+        }
     }
 }

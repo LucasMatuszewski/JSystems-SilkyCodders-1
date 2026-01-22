@@ -80,11 +80,19 @@ public class ChatController {
 
         List<Message> messages = new ArrayList<>();
         for (ChatMessage chatMessage : chatMessages) {
-            Message message = switch (chatMessage.getRole().toLowerCase()) {
-                case "system" -> new SystemMessage(chatMessage.getContent());
-                case "assistant" -> new AssistantMessage(chatMessage.getContent());
-                case "user" -> new UserMessage(chatMessage.getContent());
-                default -> new UserMessage(chatMessage.getContent());
+            String role = chatMessage.getRole();
+            String content = chatMessage.getContent();
+            
+            // Handle null role - default to user
+            String normalizedRole = (role != null) ? role.toLowerCase() : "user";
+            // Handle null content - use empty string
+            String safeContent = (content != null) ? content : "";
+            
+            Message message = switch (normalizedRole) {
+                case "system" -> new SystemMessage(safeContent);
+                case "assistant" -> new AssistantMessage(safeContent);
+                case "user" -> new UserMessage(safeContent);
+                default -> new UserMessage(safeContent);
             };
             messages.add(message);
         }
@@ -98,6 +106,8 @@ public class ChatController {
      * 
      * <p>The {@code 0:} prefix indicates this is a text delta chunk.
      * The content must be a valid JSON-encoded string (with proper escaping).
+     * 
+     * <p>Package-private visibility for testability.
      *
      * @param chunk The text chunk to format
      * @return Formatted string for SSE transmission
