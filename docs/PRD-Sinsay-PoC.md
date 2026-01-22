@@ -37,7 +37,7 @@ The system will guide users through a structured intake form and transition into
 * **Crucial:** The stream format must strictly adhere to the **Vercel AI SDK Data Stream Protocol** (text chunks prefixed with `0:`, data chunks with `8:`).
 
 
-3. **AI Orchestration:** Use **Spring AI (`spring-ai-starter-openai`)**.
+3. **AI Orchestration:** Use **Spring AI (`spring-ai-starter-model-openai`)**.
 * Construct prompts dynamically based on the "Intent" (Return vs. Complaint).
 * Pass image data (Base64 or URL) to the `ChatClient` using `new Media(...)`.
 

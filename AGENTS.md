@@ -33,7 +33,7 @@ Planned commands once frontend exists:
 ## Backend Implementation Rules (Critical)
 - **Streaming format**: SSE must emit Vercel Data Stream chunks (`0:"text"` and `8:[{...}]`), not raw JSON.
 - **Endpoint**: `POST /api/chat` returns `text/event-stream` and maps the Spring AI stream to the Vercel format.
-- **AI stack**: use `spring-ai-starter-openai` with chat model `gpt-4o` and `Media` attachments for images.
+- **AI stack**: use `spring-ai-starter-model-openai` with chat model `gpt-4o` and `Media` attachments for images.
 - **Prompt policy**: select system prompt based on `intent` (`return` vs `complaint`). Respond to users in Polish.
 - **Persistence**: use SQLite with JPA; store request metadata, transcript, and verdicts. Never commit API keys.
 

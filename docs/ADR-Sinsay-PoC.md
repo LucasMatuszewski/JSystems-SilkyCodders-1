@@ -23,10 +23,10 @@ We are building a Proof of Concept (PoC) to automate the verification of e-comme
 
 ### 2.1 Backend Framework: Spring Boot with Spring AI
 
-* **Decision:** Use **Spring Boot 3.5.9** (Java 21) with **Spring AI (`spring-ai-starter-openai`)**.
+* **Decision:** Use **Spring Boot 3.5.9** (Java 21) with **Spring AI (`spring-ai-starter-model-openai`)**.
 * **Rationale:**
 * Java 21 Virtual Threads (`Project Loom`) handle high-concurrency I/O (AI streaming) efficiently.
-* `spring-ai-starter-openai` provides a stable abstraction over the standard OpenAI Chat Completions API.
+* `spring-ai-starter-model-openai` provides a stable abstraction over the standard OpenAI Chat Completions API.
 * **Constraint:** We explicitly avoid the newer "Responses API" or the "Official SDK Wrapper" variant to ensure broader compatibility (e.g., OpenRouter) and cleaner Spring integration.
 
 
@@ -96,7 +96,7 @@ sinsay-poc/
 ```xml
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-starter-openai</artifactId>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
     <version>1.0.0-M5</version> </dependency>
 <dependency>
     <groupId>org.xerial</groupId>
