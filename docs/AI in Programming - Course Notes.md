@@ -143,11 +143,12 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 	- Gemini CLI (open source) [Build, debug & deploy with AI | Gemini CLI](https://geminicli.com/)
 	- Codex CLI [Codex CLI](https://developers.openai.com/codex/cli/)
 	- **Goose** (also has good Desktop app): [Goose](https://block.github.io/goose/) (Open Source)
-	- OpenCode [OpenCode | The open source AI coding agent](https://opencode.ai/) (OpenSource)
+	- OpenCode [OpenCode | The open source AI coding agent](https://opencode.ai/) (Open Source)
 	- Aider [Aider - AI Pair Programming in Your Terminal](https://aider.chat/) (Open Source)
 	- Copilot CLI: [About GitHub Copilot CLI - GitHub Enterprise Cloud Docs](https://docs.github.com/en/enterprise-cloud@latest/copilot/concepts/agents/about-copilot-cli)
 	- Droid by Factory: [Factory | Agent-Native Software Development](https://factory.ai/)
 	- Letta Code (MemGPT): [Quickstart | Letta Docs](https://docs.letta.com/letta-code/quickstart) (Open Source)
+	- AIChat for Terminal commands help: [GitHub - aichat - Shell Assistant, Chat-REPL, RAG, AI Agent](https://github.com/sigoden/aichat) (Open Source)
 	- ... many more....
 
 #### Codex - official plugin from OpenAI for VSCode "family":
@@ -235,6 +236,7 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 		- Library of Skills from Vercel: [The Agent Skills Directory](https://skills.sh/)
 	- in Copilot: [About Agent Skills - GitHub Docs](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
 	- in Claude Code: [Agent Skills - Claude Code Docs](https://code.claude.com/docs/en/skills)
+	- in Gemini CLI: [Agent Skills | Gemini CLI](https://geminicli.com/docs/cli/skills/)
 	- in Cursor: [Agent Skills | Cursor Docs](https://cursor.com/docs/context/skills)
 	- in OpenCode: [Agent Skills | OpenCode](https://opencode.ai/docs/skills/)
 	- in Codex CLI: [Agent Skills](https://developers.openai.com/codex/skills)
@@ -337,15 +339,25 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
  - **Design / UX / FE with AI:**
 	 - Google: [Stitch - Design with AI](https://stitch.withgoogle.com/?pli=1)
 	 - Figma AI plugins
+		 - Figma MCP: [Guide to the Figma MCP server – Figma Learn - Help Center](https://help.figma.com/hc/en-us/articles/32132100833559-Guide-to-the-Figma-MCP-server)
 	 - Lovable
 	 - v0 from Vercel
 	 - GitHub Spark [GitHub Spark · Dream it. See it. Ship it. · GitHub](https://github.com/features/spark)
 	 - Tailwind & Shadcn popularity
  - **Code Reviews, GitHub integrations**
-	 - qodo OSS - [AI Code Review for Teams – IDE, GitHub, GitLab & CLI](https://www.qodo.ai/)
+	 - qodo - [AI Code Review for Teams – IDE, GitHub, GitLab & CLI](https://www.qodo.ai/) (open source)
 	 - CodeRabbit [AI Code Reviews | CodeRabbit | Try for Free](https://www.coderabbit.ai/)
-	 - OpenAI Codex [Use Codex in GitHub](https://developers.openai.com/codex/integrations/github/)
+		 - GitLab Sef-Managed: [CodeRabbit GitLab](https://docs.coderabbit.ai/platforms/self-hosted-gitlab)
 	 - Gemini Code Assist: [Review GitHub code using Gemini Code Assist](https://developers.google.com/gemini-code-assist/docs/review-github-code)
+		 - Consumer - config files: [Customize Gemini Code Assist behavior in GitHub  |  Google for Developers](https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github#consumer)
+		 - Enterprise - Cloud Console: [Customize Gemini Code Assist behavior in GitHub  |  Google for Developers](https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github#enterprise)
+	- Gemini CLI w CI/CD:
+		- Google Course: [Sprawdzanie kodu i analiza bezpieczeństwa za pomocą interfejsu wiersza poleceń Gemini](https://codelabs.developers.google.com/gemini-cli-code-analysis?hl=pl#0)
+		- GitLab MR Article: [Building an automated GitLab Merge Request Review Agent with Gemini CLI  | Medium](https://medium.com/google-cloud/building-an-automated-gitlab-merge-request-review-agent-with-gemini-cli-35855d53bec1)
+	- GitHub Copilot:
+		- [Configuring automatic code review by GitHub Copilot - GitHub Docs](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/configure-automatic-review)
+		- [Using GitHub Copilot code review - GitHub Docs](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review)
+	 - OpenAI Codex [Use Codex in GitHub](https://developers.openai.com/codex/integrations/github/)
 	 - Cursor Bugbot: [Bugbot | Cursor Docs](https://cursor.com/docs/bugbot)
 	 - Cursor CLI in GH Actions: [Code Review with Cursor CLI | Cursor Docs](https://cursor.com/docs/cli/cookbook/code-review)
  - **Debugging, Security, Docs**
@@ -356,6 +368,12 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 	 - Snyk: [Snyk AI-powered Developer Security Platform | AI-powered AppSec Tool & Security Platform | Snyk](https://snyk.io/)
 	 - Snyk Evo: [Security for Agentic AI Applications and Tools | Evo by Snyk | Evo](https://evo.ai.snyk.io/)
 	 - Snyk vs Mend: [Mend.io vs Snyk 2026 | Gartner Peer Insights](https://www.gartner.com/reviews/market/application-security-testing/compare/mend-io-vs-snyk)
+	 - **Markdown** is best for AI Docs, and supports many additional features, eg.
+		 - Diagrams with Mermaid [Mermaid | Diagramming and charting tool](https://mermaid.js.org/)
+		 - Slides with [Marp: Markdown Presentation Ecosystem](https://marp.app/)
+		 - **Confluence** synchronization in GH Action: [confluence-markdown-sync · Actions · GitHub Marketplace · GitHub](https://github.com/marketplace/actions/confluence-markdown-sync)
+			 - [GitHub - andygolubev/github-to-confluence-publisher](https://github.com/andygolubev/github-to-confluence-publisher)
+			 - [GitHub - mihaeu/cosmere: Sync your markdown files to Confluence](https://github.com/mihaeu/cosmere)
 - Frameworks & Tools for Agents:
 	- [AI SDK by Vercel](https://ai-sdk.dev/docs/introduction)
 	- Rust [GitHub - 0xPlaygrounds/rig: ⚙️🦀 Build modular and scalable LLM Applications in Rust](https://github.com/0xPlaygrounds/rig)
@@ -380,6 +398,7 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
 	 - Specialized in Java, JUnit and TestNG
  - **SonarQube** static analysis (to control better AI generated code):
 	 - [SonarQube for IDE - IntelliJ IDEs Plugin | Marketplace](https://plugins.jetbrains.com/plugin/7973-sonarqube-for-ide)
+	 - [SonarQube Plans & Pricing | Static Code Analysis Tool | Sonar](https://www.sonarsource.com/plans-and-pricing/)
  - **Qodana** Static Analysis & CI/CD:
 	 - [Qodana: Static Code Analysis Tool by JetBrains](https://www.jetbrains.com/qodana/)
 
