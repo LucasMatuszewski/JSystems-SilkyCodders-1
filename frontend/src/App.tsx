@@ -32,24 +32,50 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Sinsay Returns & Complaints Verification
-          </h1>
-          <p className="text-gray-600 mt-2">
+    <div className="min-h-screen bg-[#FAFAFA]">
+      {/* Promotional Banner - Sinsay Style */}
+      <div className="bg-[#DC2626] text-white py-2.5 px-4 text-center">
+        <div className="container mx-auto max-w-[1200px] flex items-center justify-center gap-2 text-sm">
+          <span className="text-base">❤</span>
+          <span className="font-medium">AI-Powered Returns & Complaints Verification</span>
+          <span className="hidden sm:inline ml-auto text-xs opacity-90">Online Support</span>
+        </div>
+      </div>
+
+      {/* Main Header - Sinsay Style */}
+      <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-10 shadow-sm">
+        <div className="container mx-auto px-4 py-4 max-w-[1200px]">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-black lowercase tracking-tight">
+              sinsay
+            </h1>
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-2 text-sm text-[#64748B]">
+                <span className="uppercase font-medium">en</span>
+                <span>English</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-[800px]">
+        <div className="mb-8 md:mb-10 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#1E293B] mb-2 md:mb-3">
+            Returns & Complaints Verification
+          </h2>
+          <p className="text-sm md:text-base text-[#64748B] max-w-[600px] mx-auto">
             Submit your return or complaint request for AI-powered verification
           </p>
-        </header>
+        </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <p className="font-semibold">Request Rejected</p>
-            <p>{error}</p>
+          <div className="bg-[#FEE2E2] border border-[#FCA5A5] text-[#DC2626] px-6 py-5 rounded-sinsay-lg mb-6 shadow-sm">
+            <p className="font-semibold text-base md:text-lg mb-2">Request Rejected</p>
+            <p className="text-sm md:text-base mb-4">{error}</p>
             <button
               onClick={handleNewRequest}
-              className="mt-3 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              className="sinsay-button-primary px-6 py-2.5 text-sm md:text-base"
             >
               Start New Request
             </button>
@@ -57,7 +83,7 @@ function App() {
         )}
 
         {state === 'form' && (
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-sinsay-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] p-8 md:p-12">
             <IntakeForm
               onSubmit={handleFormSubmit}
               onError={handleFormError}
@@ -66,7 +92,7 @@ function App() {
         )}
 
         {state === 'chat' && conversationId && (
-          <div className="bg-white rounded-lg shadow p-6 h-[600px] flex flex-col">
+          <div className="bg-white rounded-sinsay-xl shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1)] p-6 md:p-8 lg:p-12 flex flex-col min-h-[500px] max-h-[80vh] md:h-[600px]">
             <ChatInterface
               conversationId={conversationId}
               requestType={requestType}

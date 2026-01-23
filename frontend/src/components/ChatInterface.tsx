@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { resizeImage, validateImage } from '../lib/imageUtils';
+import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface ChatInterfaceProps {
   conversationId: string;
@@ -11,6 +12,118 @@ interface ChatInterfaceProps {
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  status?: 'APPROVED' | 'REJECTED'; // Status from parsed JSON
+}
+
+/**
+ * Extracts and parses JSON status from message content
+ * Returns the status if found, null otherwise
+ */
+function extractJsonStatus(content: string): 'APPROVED' | 'REJECTED' | null {
+  if (!content || content.trim().length === 0) {
+    return null;
+  }
+  
+  try {
+    // Pattern 1: JSON in code blocks ```json {...} ``` or ``` {...} ```
+    const jsonBlockPatterns = [
+      /```json\s*([\s\S]*?)\s*```/,
+      /```\s*\{[\s\S]*?"status"[\s\S]*?\}\s*```/,
+    ];
+    
+    for (const pattern of jsonBlockPatterns) {
+      const match = content.match(pattern);
+      if (match) {
+        const jsonStr = match[1] || match[0].replace(/```(json)?\s*/g, '').replace(/```/g, '').trim();
+        try {
+          const parsed = JSON.parse(jsonStr);
+          if (parsed && (parsed.status === 'APPROVED' || parsed.status === 'REJECTED')) {
+            console.log('Extracted status from JSON block:', parsed.status);
+            return parsed.status;
+          }
+        } catch (e) {
+          // Continue to next pattern
+        }
+      }
+    }
+    
+    // Pattern 2: Raw JSON object (find first complete JSON object with status)
+    // Try to find a complete JSON object starting with {
+    let braceCount = 0;
+    let inString = false;
+    let escapeNext = false;
+    let jsonStart = -1;
+    let jsonEnd = -1;
+    
+    for (let i = 0; i < content.length; i++) {
+      const char = content[i];
+      
+      if (escapeNext) {
+        escapeNext = false;
+        continue;
+      }
+      
+      if (char === '\\') {
+        escapeNext = true;
+        continue;
+      }
+      
+      if (char === '"' && !escapeNext) {
+        inString = !inString;
+        continue;
+      }
+      
+      if (!inString) {
+        if (char === '{') {
+          if (braceCount === 0) {
+            jsonStart = i;
+          }
+          braceCount++;
+        } else if (char === '}') {
+          braceCount--;
+          if (braceCount === 0 && jsonStart >= 0) {
+            jsonEnd = i;
+            break;
+          }
+        }
+      }
+    }
+    
+    if (jsonStart >= 0 && jsonEnd >= 0) {
+      const jsonStr = content.substring(jsonStart, jsonEnd + 1);
+      // Check if it contains status field
+      if (jsonStr.includes('"status"')) {
+        try {
+          const parsed = JSON.parse(jsonStr);
+          if (parsed && (parsed.status === 'APPROVED' || parsed.status === 'REJECTED')) {
+            console.log('Extracted status from raw JSON:', parsed.status);
+            return parsed.status;
+          }
+        } catch (e) {
+          // Try regex extraction as fallback
+        }
+      }
+    }
+    
+    // Pattern 3: Direct status field extraction (regex fallback)
+    const statusPatterns = [
+      /"status"\s*:\s*"(APPROVED|REJECTED)"/,
+      /'status'\s*:\s*'(APPROVED|REJECTED)'/,
+      /status\s*:\s*["']?(APPROVED|REJECTED)["']?/,
+    ];
+    
+    for (const pattern of statusPatterns) {
+      const match = content.match(pattern);
+      if (match && (match[1] === 'APPROVED' || match[1] === 'REJECTED')) {
+        console.log('Extracted status via regex:', match[1]);
+        return match[1] as 'APPROVED' | 'REJECTED';
+      }
+    }
+  } catch (e) {
+    console.debug('Error extracting JSON status:', e);
+  }
+  
+  return null;
 }
 
 /**
@@ -130,8 +243,7 @@ function parseMarkdown(text: string): React.ReactNode {
  */
 function parseInlineMarkdown(text: string, baseKey: number): React.ReactNode {
   const parts: React.ReactNode[] = [];
-  let remaining = text;
-  let key = 0;
+    let key = 0;
   let lastIndex = 0;
 
   // Process bold (**text**)
@@ -489,10 +601,9 @@ export function ChatInterface({
                 const { displayText, isInJson: currentlyInJson } = filterJsonBlocks(rawMessage);
                 
                 // Update state
-                const wasInJson = isInJsonBlock;
-                isInJsonBlock = currentlyInJson;
-                
-                // Determine what to display
+                  isInJsonBlock = currentlyInJson;
+
+                  // Determine what to display
                 let contentToShow: string;
                 if (isInJsonBlock) {
                   // We're in a JSON block - show ONLY "Generating response..."
@@ -502,16 +613,19 @@ export function ChatInterface({
                   contentToShow = displayText;
                 }
 
-                // Update messages with filtered content
+                // Extract status from raw message (if available)
+                const extractedStatus = extractJsonStatus(rawMessage);
+                
+                // Update messages with filtered content and status
                 setMessages((prev) => {
                   const lastMessage = prev[prev.length - 1];
                   if (lastMessage && lastMessage.role === 'assistant') {
                     return [
                       ...prev.slice(0, -1),
-                      { role: 'assistant', content: contentToShow },
+                      { role: 'assistant', content: contentToShow, status: extractedStatus || undefined },
                     ];
                   }
-                  return [...prev, { role: 'assistant', content: contentToShow }];
+                  return [...prev, { role: 'assistant', content: contentToShow, status: extractedStatus || undefined }];
                 });
               }
             }
@@ -531,15 +645,16 @@ export function ChatInterface({
     } finally {
       // Final cleanup: remove any "generating response" and show final filtered content
       const { displayText } = filterJsonBlocks(rawMessage);
+      const finalStatus = extractJsonStatus(rawMessage);
       setMessages((prev) => {
         const lastMessage = prev[prev.length - 1];
         if (lastMessage && lastMessage.role === 'assistant') {
           return [
             ...prev.slice(0, -1),
-            { role: 'assistant', content: displayText },
+            { role: 'assistant', content: displayText, status: finalStatus || undefined },
           ];
         }
-        return [...prev, { role: 'assistant', content: displayText }];
+        return [...prev, { role: 'assistant', content: displayText, status: finalStatus || undefined }];
       });
     }
   };
@@ -604,45 +719,83 @@ export function ChatInterface({
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 min-h-0">
         {messages.length === 0 && (
-          <div className="text-center text-gray-500">
-            <p>AI is analyzing your {requestType === 'RETURN' ? 'receipt' : 'defect photos'}...</p>
-            <p className="text-sm mt-2">You can upload additional images if needed.</p>
+          <div className="text-center text-[#64748B] py-8 md:py-12">
+            <p className="text-sm md:text-base mb-2">AI is analyzing your {requestType === 'RETURN' ? 'receipt' : 'defect photos'}...</p>
+            <p className="text-xs md:text-sm">You can upload additional images if needed.</p>
           </div>
         )}
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`p-3 rounded ${
-              message.role === 'user'
-                ? 'bg-blue-100 ml-auto max-w-xs'
-                : 'bg-gray-100 mr-auto max-w-2xl'
-            }`}
-          >
-            <div>{formatMessageContent(message.content)}</div>
-          </div>
-        ))}
+        {messages.map((message, index) => {
+          if (message.role === 'user') {
+            // User messages - Sinsay Style
+            return (
+              <div
+                key={index}
+                className="bg-[#F1F5F9] ml-auto max-w-[85%] md:max-w-xs text-[#1E293B] p-3 md:p-4 rounded-sinsay-md border border-[#E2E8F0] shadow-sm"
+              >
+                <div className="text-xs md:text-sm leading-relaxed">{formatMessageContent(message.content)}</div>
+              </div>
+            );
+          } else {
+            // Assistant messages - Sinsay Style with status indicator
+            const isAccepted = message.status === 'APPROVED';
+            const isRejected = message.status === 'REJECTED';
+            
+            return (
+              <div key={index} className="mr-auto max-w-[85%] md:max-w-2xl space-y-3">
+                {/* Status Indicator - Sinsay Style */}
+                {message.status && (isAccepted || isRejected) && (
+                  <div
+                    className={`rounded-sinsay-md p-3 md:p-4 flex items-center gap-2 md:gap-3 border shadow-sm ${
+                      isAccepted
+                        ? 'bg-[#ECFDF5] border-[#86EFAC]'
+                        : 'bg-[#FEE2E2] border-[#FCA5A5]'
+                    }`}
+                  >
+                    {isAccepted ? (
+                      <>
+                        <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-[#059669] flex-shrink-0" />
+                        <span className="text-[#059669] font-semibold text-sm md:text-base">Request Accepted</span>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="w-5 h-5 md:w-6 md:h-6 text-[#DC2626] flex-shrink-0" />
+                        <span className="text-[#DC2626] font-semibold text-sm md:text-base">Request Rejected</span>
+                      </>
+                    )}
+                  </div>
+                )}
+                
+                {/* AI response - Sinsay Style */}
+                <div className="bg-white border border-[#E2E8F0] rounded-sinsay-md p-4 md:p-5 text-[#1E293B] shadow-sm">
+                  <div className="text-xs md:text-sm leading-relaxed">{formatMessageContent(message.content)}</div>
+                </div>
+              </div>
+            );
+          }
+        })}
         {isLoading && (
-          <div className="bg-gray-100 p-3 rounded mr-auto max-w-2xl">
-            <p>Analyzing...</p>
+          <div className="flex flex-col items-center justify-center min-h-[200px] py-8">
+            <Loader2 className="w-10 h-10 md:w-12 md:h-12 text-[#3B82F6] animate-spin" />
+            <p className="text-sm md:text-base text-[#64748B] mt-4">AI is analyzing your images...</p>
           </div>
         )}
       </div>
 
-      {/* Error Message */}
+      {/* Error Message - Sinsay Style */}
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-4 mb-2">
+        <div className="bg-[#FEE2E2] border border-[#FCA5A5] text-[#DC2626] px-4 py-3 rounded-sinsay-md mx-4 mb-2 text-sm shadow-sm">
           {error}
         </div>
       )}
 
-      {/* Input Area */}
-      <div className="border-t p-4 space-y-2">
+      {/* Input Area - Sinsay Style */}
+      <div className="border-t border-[#E2E8F0] p-4 md:p-5 space-y-3 bg-[#FAFAFA]">
         <div className="flex gap-2">
-          <label className="flex items-center px-4 py-2 bg-gray-200 rounded cursor-pointer hover:bg-gray-300">
+          <label className="flex items-center px-4 md:px-5 py-2 md:py-2.5 bg-[#F1F5F9] rounded-sinsay-md cursor-pointer hover:bg-[#E2E8F0] transition-colors duration-200 border border-[#E2E8F0] shadow-sm">
             <input
               type="file"
               accept="image/jpeg,image/jpg,image/png,image/webp"
@@ -651,15 +804,32 @@ export function ChatInterface({
               disabled={uploadingImages || isLoading}
               className="hidden"
             />
-            <span>{uploadingImages ? 'Processing...' : 'Upload Images'}</span>
+            <span className="text-[#1E293B] text-xs md:text-sm font-medium">
+              {uploadingImages ? 'Processing...' : 'Upload Images'}
+            </span>
           </label>
         </div>
-        <button
-          onClick={onNewRequest}
-          className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded hover:bg-gray-300"
-        >
-          Start New Request
-        </button>
+        {/* Submit Request Button - Sinsay Style */}
+        {!isLoading && messages.some(m => m.role === 'assistant') && (
+          <button
+            onClick={() => {
+              // Placeholder for submission logic
+              console.log('Submit Request clicked');
+            }}
+            className="w-full sinsay-button-primary py-2.5 md:py-3 px-4 text-sm md:text-base"
+          >
+            Submit Request
+          </button>
+        )}
+        {/* Start New Request Button - Sinsay Style */}
+        {!isLoading && (
+          <button
+            onClick={onNewRequest}
+            className="w-full sinsay-button-secondary py-2 md:py-2.5 px-4 text-sm md:text-base"
+          >
+            Start New Request
+          </button>
+        )}
       </div>
     </div>
   );

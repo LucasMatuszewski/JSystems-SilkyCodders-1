@@ -2,7 +2,8 @@ import { useForm, type FieldErrors } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { intakeFormSchema, type IntakeFormData, type ReturnFormData, type ComplaintFormData } from '../lib/schemas';
 import { useState } from 'react';
-import { resizeImage, validateImage } from '../lib/imageUtils';
+import { FileUploader } from './FileUploader';
+import { Lock, Calendar } from 'lucide-react';
 
 interface IntakeFormProps {
   onSubmit: (data: IntakeFormData, conversationId: string) => void;
@@ -52,27 +53,8 @@ export function IntakeForm({ onSubmit, onError }: IntakeFormProps) {
     }
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    
-    // Validate files
-    for (const file of files) {
-      const validation = validateImage(file);
-      if (!validation.valid) {
-        onError(validation.error || 'Invalid image file');
-        return;
-      }
-    }
-
-    // Resize images
-    try {
-      const resizedFiles = await Promise.all(
-        files.map((file) => resizeImage(file))
-      );
-      setValue('images', resizedFiles, { shouldValidate: true });
-    } catch (error) {
-      onError('Failed to process images. Please try again.');
-    }
+  const handleFileChange = (files: File[]) => {
+    setValue('images', files, { shouldValidate: true });
   };
 
   const onSubmitForm = async (data: IntakeFormData) => {
@@ -116,105 +98,117 @@ export function IntakeForm({ onSubmit, onError }: IntakeFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-6">
-      {/* Request Type Selection */}
+      {/* Request Type Selection - Sinsay Style */}
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label className="block text-sm md:text-base font-medium mb-3 text-[#1E293B]">
           Request Type
         </label>
-        <div className="flex gap-4">
+        <div className="relative bg-[#F1F5F9] rounded-full p-1 flex gap-1">
           <button
             type="button"
             onClick={() => handleRequestTypeChange('RETURN')}
-            className={`px-4 py-2 rounded ${
-              requestType === 'RETURN'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700'
-            }`}
+            className={`
+              relative z-10 flex-1 px-4 md:px-6 py-2.5 md:py-3 rounded-full transition-all duration-200 ease-in-out text-sm md:text-base
+              ${requestType === 'RETURN'
+                ? 'bg-white text-[#1E293B] font-medium shadow-sm'
+                : 'bg-transparent text-[#64748B] font-normal hover:text-[#1E293B]'}
+            `}
           >
             Return (30-day policy)
           </button>
           <button
             type="button"
             onClick={() => handleRequestTypeChange('COMPLAINT')}
-            className={`px-4 py-2 rounded ${
-              requestType === 'COMPLAINT'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700'
-            }`}
+            className={`
+              relative z-10 flex-1 px-4 md:px-6 py-2.5 md:py-3 rounded-full transition-all duration-200 ease-in-out text-sm md:text-base
+              ${requestType === 'COMPLAINT'
+                ? 'bg-white text-[#1E293B] font-medium shadow-sm'
+                : 'bg-transparent text-[#64748B] font-normal hover:text-[#1E293B]'}
+            `}
           >
             Complaint (2-year warranty)
           </button>
         </div>
       </div>
 
-      {/* Order/Receipt ID */}
+      {/* Order/Receipt ID - Sinsay Style */}
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label className="block text-sm md:text-base font-medium mb-2 text-[#1E293B]">
           Order/Receipt ID *
         </label>
-        <input
-          type="text"
-          {...register('orderReceiptId')}
-          className="w-full px-3 py-2 border rounded"
-        />
+        <div className="relative">
+          <Lock className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[#3B82F6]" />
+          <input
+            type="text"
+            {...register('orderReceiptId')}
+            className="w-full h-11 md:h-12 pl-10 md:pl-12 pr-4 py-3 sinsay-input text-[#1E293B] placeholder:text-[#94A3B8] text-sm md:text-base"
+            placeholder="Enter your order or receipt ID"
+          />
+        </div>
         {errors.orderReceiptId && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="text-[#DC2626] text-xs md:text-sm mt-1.5">
             {errors.orderReceiptId.message}
           </p>
         )}
       </div>
 
-      {/* Purchase Date */}
+      {/* Purchase Date - Sinsay Style */}
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label className="block text-sm md:text-base font-medium mb-2 text-[#1E293B]">
           Purchase Date *
         </label>
-        <input
-          type="date"
-          {...register('purchaseDate')}
-          className="w-full px-3 py-2 border rounded"
-          max={new Date().toISOString().split('T')[0]}
-        />
+        <div className="relative">
+          <Calendar className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-[#3B82F6]" />
+          <input
+            type="date"
+            {...register('purchaseDate')}
+            className="w-full h-11 md:h-12 pl-10 md:pl-12 pr-4 py-3 sinsay-input text-[#1E293B] placeholder:text-[#94A3B8] text-sm md:text-base"
+            max={new Date().toISOString().split('T')[0]}
+          />
+        </div>
+        <p className="text-xs text-[#64748B] mt-1.5">Format: YYYY-MM-DD</p>
         {errors.purchaseDate && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="text-[#DC2626] text-xs md:text-sm mt-1.5">
             {errors.purchaseDate.message}
           </p>
         )}
       </div>
 
-      {/* Return-specific: Unused checkbox */}
+      {/* Return-specific: Unused checkbox - Sinsay Style */}
       {requestType === 'RETURN' && (
         <div>
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-3 cursor-pointer group">
             <input
               type="checkbox"
               {...register('unused')}
-              className="w-4 h-4"
+              className="w-4 h-4 md:w-5 md:h-5 rounded border-2 border-[#E2E8F0] text-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 focus:ring-offset-0 cursor-pointer"
             />
-            <span>I confirm the item is unused *</span>
+            <span className="text-sm md:text-base text-[#1E293B] group-hover:text-[#3B82F6] transition-colors">
+              I confirm the item is unused *
+            </span>
           </label>
           {(errors as FieldErrors<ReturnFormData>).unused && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="text-[#DC2626] text-xs md:text-sm mt-1.5">
               {(errors as FieldErrors<ReturnFormData>).unused?.message}
             </p>
           )}
         </div>
       )}
 
-      {/* Complaint-specific: Defect Description */}
+      {/* Complaint-specific: Defect Description - Sinsay Style */}
       {requestType === 'COMPLAINT' && (
         <div>
-          <label className="block text-sm font-medium mb-2">
+          <label className="block text-sm md:text-base font-medium mb-2 text-[#1E293B]">
             Defect Description *
           </label>
           <textarea
             {...register('defectDescription')}
             rows={4}
-            className="w-full px-3 py-2 border rounded"
+            className="w-full min-h-[120px] px-4 py-3 sinsay-input text-[#1E293B] placeholder:text-[#94A3B8] text-sm md:text-base resize-y"
             placeholder="Describe the defect in detail (minimum 10 characters)"
           />
           {(errors as FieldErrors<ComplaintFormData>).defectDescription && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="text-[#DC2626] text-xs md:text-sm mt-1.5">
               {(errors as FieldErrors<ComplaintFormData>).defectDescription?.message}
             </p>
           )}
@@ -223,33 +217,23 @@ export function IntakeForm({ onSubmit, onError }: IntakeFormProps) {
 
       {/* Image Upload */}
       <div>
-        <label className="block text-sm font-medium mb-2">
+        <label className="block text-sm md:text-base font-medium mb-2 text-[#1E293B]">
           {requestType === 'RETURN' ? 'Receipt Image' : 'Defect Photos'} *
         </label>
-        <input
-          type="file"
-          accept="image/jpeg,image/jpg,image/png,image/webp"
-          multiple
+        <FileUploader
+          value={watchedImages || []}
           onChange={handleFileChange}
-          className="w-full px-3 py-2 border rounded"
+          onError={onError}
+          error={errors.images?.message}
+          multiple={true}
         />
-        {watchedImages && watchedImages.length > 0 && (
-          <p className="text-sm text-gray-600 mt-1">
-            {watchedImages.length} image(s) selected
-          </p>
-        )}
-        {errors.images && (
-          <p className="text-red-500 text-sm mt-1">
-            {errors.images.message}
-          </p>
-        )}
       </div>
 
-      {/* Submit Button */}
+      {/* Submit Button - Sinsay Style */}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:opacity-50"
+        className="w-full sinsay-button-primary py-3 md:py-3.5 px-6 text-sm md:text-base font-medium"
       >
         {isSubmitting ? 'Submitting...' : 'Submit Request'}
       </button>
