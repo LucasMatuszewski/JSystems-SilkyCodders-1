@@ -1,7 +1,7 @@
 
 Notes for my presentation for JSystem AI in Programming course I will lead in 01.2026
 
-Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
+Survey results: [Form - Tally](https://tally.so/r/9q9kMG)
 
 ## PYTANIA NA START:
 - Jak do tej pory używasz AI w pracy? Jakich narzędzi i w jaki sposób?
@@ -390,8 +390,9 @@ Survey results: [Form - Tally](https://tally.so/forms/9q9kMG)
  - **AI Assistant** - [AI Assistant in JetBrains IDEs](https://www.jetbrains.com/help/idea/ai-assistant-in-jetbrains-ides.html?utm_source=product&utm_medium=link&utm_campaign=IU&utm_content=2025.3)
 	 - **low quota** - only 10 credits in Pro for $10 (~10 agent requests): [Licensing and subscriptions | AI Assistant Documentation](https://www.jetbrains.com/help/ai-assistant/licensing-and-subscriptions.html#ai-quota)
 	 - **Junie** AI Agent (unified in Chat now): [Junie, the AI coding agent by JetBrains - IntelliJ IDEs Plugin | Marketplace](https://plugins.jetbrains.com/plugin/26104-junie-the-ai-coding-agent-by-jetbrains)
- - **GH Copilot** - higher quota, also on free tier (GPT-5 mini, Haiku 4.5, ) 
+ - **GH Copilot** - higher quota, also on free tier (GPT-5 mini, Haiku 4.5)
 	 - [GitHub Copilot - Your AI Pair Programmer - IntelliJ IDEs Plugin | Marketplace](https://plugins.jetbrains.com/plugin/17718-github-copilot--your-ai-pair-programmer)
+	 - [GitHub Copilot app modernization - IntelliJ IDEs Plugin | Marketplace](https://plugins.jetbrains.com/plugin/28791-github-copilot-app-modernization) (legacy code, refactors)
  - **AI Unit Testing**: [Diffblue Cover - AI Agent for unit testing - IntelliJ IDEs Plugin | Marketplace](https://plugins.jetbrains.com/plugin/14946-diffblue-cover--ai-agent-for-unit-testing)
 	 - Does NOT use LLM. Own small RL model that generates tests automatically!
 	 - has mixed reviews, probably LLM based agent can write better tests nowadays
