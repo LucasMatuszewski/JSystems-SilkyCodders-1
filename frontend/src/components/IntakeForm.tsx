@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { SessionContext } from '../App';
 import { useState } from 'react';
+import { Camera } from 'lucide-react';
 
 const schema = z.object({
   orderId: z.string().min(5, 'Numer zamówienia musi mieć co najmniej 5 znaków'),
@@ -122,38 +123,38 @@ export function IntakeForm({
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label
-              className={`flex flex-col p-4 border transition-all cursor-pointer hover:border-black ${watchIntent === 'RETURN' ? 'border-black bg-gray-50' : 'border-gray-200'}`}
+              className={`flex flex-col p-4 border transition-all cursor-pointer hover:border-black ${watchIntent === 'RETURN' ? 'border-black bg-white ring-1 ring-black' : 'border-gray-200 bg-white'}`}
             >
               <div className="flex items-center mb-1">
                 <input
                   type="radio"
                   {...register('intent')}
                   value="RETURN"
-                  className="accent-black"
+                  className="accent-black w-4 h-4"
                 />
                 <span className="ml-3 text-sm font-bold uppercase tracking-wide">
                   Zwrot standardowy
                 </span>
               </div>
-              <span className="ml-7 text-[10px] text-gray-500 leading-tight">
+              <span className="ml-7 text-[10px] text-gray-400 leading-tight">
                 Do 30 dni. Produkty nieużywane z metkami.
               </span>
             </label>
             <label
-              className={`flex flex-col p-4 border transition-all cursor-pointer hover:border-black ${watchIntent === 'COMPLAINT' ? 'border-black bg-gray-50' : 'border-gray-200'}`}
+              className={`flex flex-col p-4 border transition-all cursor-pointer hover:border-black ${watchIntent === 'COMPLAINT' ? 'border-black bg-white ring-1 ring-black' : 'border-gray-200 bg-white'}`}
             >
               <div className="flex items-center mb-1">
                 <input
                   type="radio"
                   {...register('intent')}
                   value="COMPLAINT"
-                  className="accent-black"
+                  className="accent-black w-4 h-4"
                 />
                 <span className="ml-3 text-sm font-bold uppercase tracking-wide">
                   Reklamacja
                 </span>
               </div>
-              <span className="ml-7 text-[10px] text-gray-500 leading-tight">
+              <span className="ml-7 text-[10px] text-gray-400 leading-tight">
                 Wada produktu. 2 lata rękojmi.
               </span>
             </label>
@@ -175,33 +176,18 @@ export function IntakeForm({
                 <button
                   type="button"
                   onClick={() => setImage(null)}
-                  className="absolute top-2 right-2 bg-black text-white w-8 h-8 flex items-center justify-center font-bold hover:bg-red-600 transition-colors"
+                  className="absolute top-2 right-2 bg-black text-white w-8 h-8 flex items-center justify-center font-bold hover:bg-sinsay-red transition-colors"
                 >
                   ✕
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center aspect-video border-2 border-dashed border-gray-200 hover:border-black transition-colors cursor-pointer bg-gray-50 group-hover:bg-white">
-                <svg
-                  className="w-12 h-12 text-gray-300 group-hover:text-black transition-colors"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1"
-                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1"
-                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 group-hover:text-black">
+              <label className="flex flex-col items-center justify-center aspect-video border border-dashed border-gray-300 hover:border-black transition-colors cursor-pointer bg-white group-hover:bg-gray-50">
+                <Camera
+                  className="w-8 h-8 text-gray-300 group-hover:text-black transition-colors"
+                  strokeWidth={1}
+                />
+                <span className="mt-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 group-hover:text-black transition-colors">
                   Dodaj zdjęcie
                 </span>
                 <input
@@ -221,7 +207,7 @@ export function IntakeForm({
           </label>
           <textarea
             {...register('description')}
-            className="sinsay-input !rounded-2xl min-h-[120px] resize-none"
+            className="sinsay-input min-h-[120px] resize-none"
             placeholder="Opisz krótko przyczynę zwrotu lub wadę produktu..."
           />
           {errors.description && (

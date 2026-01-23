@@ -1,139 +1,161 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Search, User, ShoppingBag, Menu } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* Promo Bar */}
-      <div className="promo-bar">
+    <div className="min-h-screen flex flex-col bg-white text-sinsay-black font-sans">
+      {/* 1. Promo Bar */}
+      <div className="bg-sinsay-red text-white text-[10px] md:text-xs font-bold uppercase tracking-widest text-center py-2 px-4">
         Darmowa dostawa od 150 PLN | 30 dni na zwrot
       </div>
 
-      {/* Header */}
-      <header className="border-bottom border-gray-100 py-4 px-6 md:px-12 flex justify-between items-center bg-white sticky top-0 z-50 shadow-sm">
-        <div className="flex items-center gap-8">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Sinsay_logo.svg/2560px-Sinsay_logo.svg.png"
-            alt="Sinsay"
-            className="h-6 md:h-8"
-          />
-        </div>
-
-        <div className="flex items-center gap-6">
-          <div className="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-2 w-64">
-            <svg
-              className="w-4 h-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <input
-              type="text"
-              placeholder="Szukaj"
-              className="bg-transparent border-none focus:ring-0 text-sm ml-2 w-full outline-none"
-            />
+      {/* 2. Header */}
+      <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
+        <div className="max-w-[1920px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+          {/* Mobile Menu & Search (Left) */}
+          <div className="flex items-center md:hidden gap-4">
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              <Menu className="w-6 h-6" strokeWidth={1.5} />
+            </button>
+            <Search className="w-6 h-6" strokeWidth={1.5} />
           </div>
-          <div className="flex items-center gap-4">
-            <svg
-              className="w-6 h-6 text-black cursor-pointer"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+
+          {/* Logo (Center on Mobile, Left on Desktop) */}
+          <div className="flex-shrink-0 cursor-pointer">
+            <h1 className="text-2xl md:text-3xl font-black tracking-tighter uppercase">
+              Sinsay
+            </h1>
+          </div>
+
+          {/* Desktop Search (Center) */}
+          <div className="hidden md:flex flex-1 max-w-xl mx-auto">
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Szukaj produktu"
+                className="sinsay-search-input"
               />
-            </svg>
-            <div className="relative cursor-pointer">
-              <svg
-                className="w-6 h-6 text-black"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
+              <button className="absolute right-0 top-0 h-10 w-10 flex items-center justify-center pointer-events-none">
+                <Search className="w-5 h-5 text-gray-500" strokeWidth={1.5} />
+              </button>
+            </div>
+          </div>
+
+          {/* Icons (Right) */}
+          <div className="flex items-center gap-4 md:gap-6">
+            <div className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity">
+              <User className="w-6 h-6" strokeWidth={1.5} />
+              <span className="text-xs font-bold uppercase hidden lg:block">
+                Konto
+              </span>
+            </div>
+            <div className="flex items-center gap-2 cursor-pointer hover:opacity-70 transition-opacity">
+              <ShoppingBag className="w-6 h-6" strokeWidth={1.5} />
+              <span className="text-xs font-bold uppercase hidden lg:block">
+                Koszyk
+              </span>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full p-4 md:p-8">
-        {children}
-      </main>
+      {/* 3. Main Content */}
+      <main className="flex-1 w-full bg-white">{children}</main>
 
-      <footer className="bg-black text-white py-12 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-widest">
-              Pomoc i kontakt
-            </h4>
-            <ul className="space-y-2 text-xs text-gray-400">
-              <li>Jak kupować</li>
-              <li>Koszty dostawy</li>
-              <li>Zwroty i reklamacje</li>
-              <li>Tabela rozmiarów</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-widest">
-              Polityka prywatności
-            </h4>
-            <ul className="space-y-2 text-xs text-gray-400">
-              <li>Polityka prywatności</li>
-              <li>Polityka cookies</li>
-              <li>Ustawienia cookies</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-widest">
-              O Sinsay
-            </h4>
-            <ul className="space-y-2 text-xs text-gray-400">
-              <li>O nas</li>
-              <li>Pressroom</li>
-              <li>Kariera</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase text-sm tracking-widest">
-              Newsletter
-            </h4>
-            <p className="text-xs text-gray-400 mb-4">
-              Zapisz się i otrzymaj -15% na pierwsze zakupy!
-            </p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="E-mail"
-                className="bg-white text-black p-2 text-xs w-full outline-none"
-              />
-              <button className="bg-white text-black px-4 py-2 text-xs font-bold font-montserrat">
-                OK
-              </button>
+      {/* 4. Footer */}
+      <footer className="bg-black text-white pt-12 pb-6 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div>
+              <h4 className="font-bold text-sm uppercase tracking-widest mb-6">
+                Pomoc i kontakt
+              </h4>
+              <ul className="space-y-3 text-xs text-gray-300">
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Jak kupować
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Koszty dostawy
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Zwroty i reklamacje
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Tabela rozmiarów
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-sm uppercase tracking-widest mb-6">
+                Polityka
+              </h4>
+              <ul className="space-y-3 text-xs text-gray-300">
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Polityka prywatności
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Polityka cookies
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Ustawienia cookies
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-sm uppercase tracking-widest mb-6">
+                O nas
+              </h4>
+              <ul className="space-y-3 text-xs text-gray-300">
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Marka Sinsay
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Kariera
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Pressroom
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">
+                  Coming Soon
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold text-sm uppercase tracking-widest mb-6">
+                Newsletter
+              </h4>
+              <p className="text-xs text-gray-300 mb-4 leading-relaxed">
+                Zapisz się do newslettera i otrzymaj -15% na pierwsze zakupy
+                online!
+              </p>
+              <form className="flex">
+                <input
+                  type="email"
+                  placeholder="Twój e-mail"
+                  className="flex-1 bg-white text-black px-4 py-2 text-xs outline-none"
+                />
+                <button
+                  type="button"
+                  className="bg-sinsay-gray text-black px-6 py-2 text-xs font-bold uppercase hover:bg-white transition-colors"
+                >
+                  Zapisz
+                </button>
+              </form>
             </div>
           </div>
-        </div>
-        <div className="mt-12 pt-8 border-t border-gray-800 text-center text-[10px] text-gray-500 uppercase tracking-widest">
-          © 2026 Sinsay | SilkyCodders PoC
+
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-500 uppercase tracking-wider">
+            <p>© 2026 Sinsay. Wszelkie prawa zastrzeżone</p>
+            <div className="mt-4 md:mt-0 flex gap-4">
+              <span>Polska / Poland</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
