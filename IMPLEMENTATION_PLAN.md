@@ -20,8 +20,8 @@ We need to save the history of what happened.
     - [x] Save the *AI's* full response to DB after streaming completes (or incrementally). *Note: Capturing the full stream content for saving might require a custom `doOnNext` or `reduce` in the Flux.*
 
 ## Phase 3: Frontend Polish & Optimization
-- [ ] **Image Resizing** (`IntakeForm.tsx`):
-    - [ ] Implement client-side canvas resizing to max 1024px (width or height) before setting state. This is a critical PRD requirement to save tokens/bandwidth.
+- [x] **Image Resizing** (`IntakeForm.tsx`):
+    - [x] Implement client-side canvas resizing to max 1024px (width or height) before setting state. This is a critical PRD requirement to save tokens/bandwidth.
 - [ ] **UX Polish**:
     - [ ] Ensure loading states are clear.
     - [ ] Handle error cases (e.g., backend offline).

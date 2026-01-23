@@ -20,14 +20,58 @@ export function IntakeForm({ onSubmit }: { onSubmit: (data: SessionContext) => v
 
   const [image, setImage] = useState<string | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const resizeImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const maxDim = 1024;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          // Default to JPEG for better compression if original was JPEG, else PNG
+          const type = file.type === 'image/jpeg' ? 'image/jpeg' : 'image/png';
+          resolve(canvas.toDataURL(type, 0.8)); // 0.8 quality for JPEG
+        } else {
+          reject(new Error("Canvas context not available"));
+        }
+        URL.revokeObjectURL(img.src);
+      };
+      img.onerror = (err) => reject(err);
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const resized = await resizeImage(file);
+        setImage(resized);
+      } catch (err) {
+        console.error("Failed to resize image", err);
+        // Fallback to original if resize fails
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImage(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
