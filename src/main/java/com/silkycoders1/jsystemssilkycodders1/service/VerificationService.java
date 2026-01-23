@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.silkycoders1.jsystemssilkycodders1.controller.ChatRequest;
 import com.silkycoders1.jsystemssilkycodders1.controller.MessageDto;
+import com.silkycoders1.jsystemssilkycodders1.model.ChatMessage;
 import com.silkycoders1.jsystemssilkycodders1.model.VerificationSession;
 import com.silkycoders1.jsystemssilkycodders1.repository.ChatMessageRepository;
 import com.silkycoders1.jsystemssilkycodders1.repository.VerificationSessionRepository;
@@ -17,13 +18,13 @@ import org.springframework.ai.content.Media;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
-import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,29 +38,69 @@ public class VerificationService {
     public Flux<String> verify(ChatRequest request) {
         ChatClient chatClient = chatClientBuilder.build();
 
-        if (request.messages().size() == 1) { 
-            VerificationSession session = new VerificationSession(request.orderId(), request.intent(), request.description());
-            sessionRepo.save(session);
+        // 1. Resolve Session
+        VerificationSession session;
+        if (request.messages().size() == 1) {
+            session = new VerificationSession(request.orderId(), request.intent(), request.description());
+            session = sessionRepo.save(session);
+        } else {
+            session = sessionRepo.findTopByOrderIdOrderByCreatedAtDesc(request.orderId());
+            if (session == null) {
+                // Fallback: create new if not found
+                session = new VerificationSession(request.orderId(), request.intent(), request.description());
+                session = sessionRepo.save(session);
+            }
         }
+        final UUID sessionId = session.getId();
 
+        // 2. Build Context & Save User Message
         List<Message> messages = new ArrayList<>();
-        
         String systemText = getSystemPrompt(request.intent());
         messages.add(new SystemMessage(systemText));
 
-        for (MessageDto msg : request.messages()) {
+        MessageDto lastUserMsgDto = null;
+        for (int i = 0; i < request.messages().size(); i++) {
+            MessageDto msg = request.messages().get(i);
             if ("user".equalsIgnoreCase(msg.role())) {
                 messages.add(convertUserMessage(msg));
+                if (i == request.messages().size() - 1) {
+                    lastUserMsgDto = msg;
+                }
             } else if ("assistant".equalsIgnoreCase(msg.role())) {
                 messages.add(new AssistantMessage(msg.content().toString()));
             }
         }
 
+        if (lastUserMsgDto != null) {
+            saveUserMessage(sessionId, lastUserMsgDto);
+        }
+
+        // 3. Stream & Persist Response
+        StringBuilder responseBuilder = new StringBuilder();
+        
         return chatClient.prompt()
                 .messages(messages)
                 .stream()
                 .content()
+                .doOnNext(responseBuilder::append)
+                .doOnComplete(() -> saveAssistantMessage(sessionId, responseBuilder.toString()))
                 .map(this::formatVercelMessage);
+    }
+
+    private void saveUserMessage(UUID sessionId, MessageDto msg) {
+        String text = extractTextFromContent(msg.content());
+        if (msg.experimental_attachments() != null && !msg.experimental_attachments().isEmpty()) {
+            text += " [Image Attached]";
+        }
+        ChatMessage chatMessage = new ChatMessage(sessionId, "user", text);
+        messageRepo.save(chatMessage);
+    }
+
+    private void saveAssistantMessage(UUID sessionId, String content) {
+        if (content != null && !content.isEmpty()) {
+            ChatMessage chatMessage = new ChatMessage(sessionId, "assistant", content);
+            messageRepo.save(chatMessage);
+        }
     }
 
     String getSystemPrompt(String intent) {
@@ -108,9 +149,34 @@ public class VerificationService {
     }
 
     UserMessage convertUserMessage(MessageDto msg) {
-        Object content = msg.content();
-        StringBuilder text = new StringBuilder();
+        String text = extractTextFromContent(msg.content());
+        List<Media> mediaList = new ArrayList<>();
         
+        if (msg.experimental_attachments() != null) {
+            for (Object attachment : msg.experimental_attachments()) {
+                if (attachment instanceof Map<?,?> map) {
+                    String url = (String) map.get("url"); 
+                    if (url != null && url.startsWith("data:")) {
+                        try {
+                            String[] parts = url.split(",");
+                            String mimeType = parts[0].split(":")[1].split(";")[0];
+                            String base64Data = parts[1];
+                            byte[] data = Base64.getDecoder().decode(base64Data);
+                            
+                            mediaList.add(new Media(MimeType.valueOf(mimeType), new ByteArrayResource(data)));
+                        } catch (Exception e) {
+                            System.err.println("Failed to process attachment: " + e.getMessage());
+                        }
+                    }
+                }
+            }
+        }
+
+        return UserMessage.builder().text(text).media(mediaList).build();
+    }
+    
+    private String extractTextFromContent(Object content) {
+        StringBuilder text = new StringBuilder();
         if (content instanceof String str) {
             text.append(str);
         } else if (content instanceof List<?> list) {
@@ -123,30 +189,7 @@ public class VerificationService {
                 }
              }
         }
-
-        List<Media> mediaList = new ArrayList<>();
-        if (msg.experimental_attachments() != null) {
-            for (Object attachment : msg.experimental_attachments()) {
-                if (attachment instanceof Map<?,?> map) {
-                    String url = (String) map.get("url"); // Expecting "data:image/png;base64,..."
-                    if (url != null && url.startsWith("data:")) {
-                        try {
-                            String[] parts = url.split(",");
-                            String mimeType = parts[0].split(":")[1].split(";")[0];
-                            String base64Data = parts[1];
-                            byte[] data = Base64.getDecoder().decode(base64Data);
-                            
-                            mediaList.add(new Media(MimeType.valueOf(mimeType), new ByteArrayResource(data)));
-                        } catch (Exception e) {
-                            // Log or ignore invalid attachments
-                            System.err.println("Failed to process attachment: " + e.getMessage());
-                        }
-                    }
-                }
-            }
-        }
-
-        return UserMessage.builder().text(text.toString()).media(mediaList).build();
+        return text.toString();
     }
 
     private String formatVercelMessage(String chunk) {

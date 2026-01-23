@@ -2,9 +2,9 @@
 
 Succinct rules for how to BUILD the project:
 
-- **Run Backend:** `./mvnw spring-boot:run`
-- **Build JAR:** `./mvnw clean package`
-- **Java Version:** 21
+- **Run Backend:** `JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./mvnw spring-boot:run` (Adjust JAVA_HOME if needed)
+- **Build JAR:** `JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./mvnw clean package`
+- **Java Version:** 17
 - **Wrapper:** Use `./mvnw` (Linux/Mac) or `mvnw.cmd` (Windows)
 
 ## Validation

@@ -10,7 +10,7 @@
    - Specific test: `./mvnw -Dtest=ClassName test`
 5. If functionality is missing then it's your job to add it as per the application specifications. Ultrathink (Deep Reasoning).
 6. When you discover issues, immediately update @IMPLEMENTATION_PLAN.md with your findings.
-7. When the tests pass, update @IMPLEMENTATION_PLAN.md, then `git add -A` then `git commit` with a message describing the changes. After the commit, `git push`.
+7. When the tests pass, update @IMPLEMENTATION_PLAN.md, then `git add -A` then `git commit` with a message describing the changes. (DO NOT PUSH).
 
 99999. Important: When authoring documentation, capture the why — tests and implementation importance.
 999999. Important: Single sources of truth. If tests unrelated to your work fail, resolve them as part of the increment.

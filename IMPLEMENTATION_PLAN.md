@@ -14,10 +14,10 @@ The current backend is "blind" and "generic". It needs to see the photos and kno
 
 ## Phase 2: Persistence (Backend)
 We need to save the history of what happened.
-- [ ] **Chat Transcript Storage**:
-    - [ ] Inject `ChatMessageRepository` into `VerificationService`.
-    - [ ] Save the *User's* message to DB upon receipt.
-    - [ ] Save the *AI's* full response to DB after streaming completes (or incrementally). *Note: Capturing the full stream content for saving might require a custom `doOnNext` or `reduce` in the Flux.*
+- [x] **Chat Transcript Storage**:
+    - [x] Inject `ChatMessageRepository` into `VerificationService`.
+    - [x] Save the *User's* message to DB upon receipt.
+    - [x] Save the *AI's* full response to DB after streaming completes (or incrementally). *Note: Capturing the full stream content for saving might require a custom `doOnNext` or `reduce` in the Flux.*
 
 ## Phase 3: Frontend Polish & Optimization
 - [ ] **Image Resizing** (`IntakeForm.tsx`):
